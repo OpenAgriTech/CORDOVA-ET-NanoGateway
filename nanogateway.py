@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+#
+# Copyright (c) 2019, Pycom Limited.
+#
+# This software is licensed under the GNU GPL version 3 or any
+# later version, with permitted additional terms. For more information
+# see the Pycom Licence v1.0 document supplied with this file, or
+# available at https://www.pycom.io/opensource/licensing
+#
+
 """ LoPy LoRaWAN Nano Gateway. Can be used for both EU868 and US915. """
 
 import errno
@@ -160,7 +170,7 @@ class NanoGateway:
         self._log('Setting up the LoRa radio at {} Mhz using {}', self._freq_to_float(self.frequency), self.datarate)
         self.lora = LoRa(
             mode=LoRa.LORA,
-            frequency=self.frequency, #self.frequency,
+            frequency=self.frequency,
             bandwidth=self.bw,
             sf=self.sf,
             preamble=8,
@@ -237,6 +247,7 @@ class NanoGateway:
         """
         LoRa radio events callback handler.
         """
+
         events = lora.events()
         if events & LoRa.RX_PACKET_EVENT:
             self.rxnb += 1
@@ -343,9 +354,9 @@ class NanoGateway:
 
         self.lora.init(
             mode=LoRa.LORA,
-            frequency=self.frequency,
-            bandwidth=self.bw,
-            sf=self.sf,
+            frequency=frequency,
+            bandwidth=self._dr_to_bw(datarate),
+            sf=self._dr_to_sf(datarate),
             preamble=8,
             coding_rate=LoRa.CODING_4_5,
             tx_iq=True
@@ -364,9 +375,9 @@ class NanoGateway:
     def _send_down_link_class_c(self, data, datarate, frequency):
         self.lora.init(
             mode=LoRa.LORA,
-            frequency=self.frequency,
-            bandwidth=self.bw,
-            sf=self.sf,
+            frequency=frequency,
+            bandwidth=self._dr_to_bw(datarate),
+            sf=self._dr_to_sf(datarate),
             preamble=8,
             coding_rate=LoRa.CODING_4_5,
             tx_iq=True,
