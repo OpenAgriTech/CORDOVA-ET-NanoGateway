@@ -91,13 +91,14 @@ class NanoGateway:
     connecting to the Internet.
     """
 
-    def __init__(self, id, frequency, datarate, ssid, password, server, port, ntp_server='pool.ntp.org', ntp_period=3600):
+    def __init__(self, id, frequency, datarate, ssid, password, server, port, ntp_server='pool.ntp.org', ntp_period=3600, region=LoRa.EU868):
         self.id = id
         self.server = server
         self.port = port
 
         self.frequency = frequency
         self.datarate = datarate
+        self.region=region
 
         self.ssid = ssid
         self.password = password
@@ -175,7 +176,8 @@ class NanoGateway:
             sf=self.sf,
             preamble=8,
             coding_rate=LoRa.CODING_4_5,
-            tx_iq=True
+            tx_iq=True,
+            region=self.region
         )
 
         # create a raw LoRa socket
