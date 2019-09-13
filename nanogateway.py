@@ -22,6 +22,8 @@ from micropython import const
 from network import LoRa
 from network import WLAN
 from machine import Timer
+from machine import WDT
+
 
 
 PROTOCOL_VERSION = const(2)
@@ -130,6 +132,7 @@ class NanoGateway:
         self.lora_sock = None
 
         self.rtc = machine.RTC()
+        self.wdt = WDT(timeout=50000)
 
     def start(self):
         """
@@ -141,6 +144,9 @@ class NanoGateway:
         # setup WiFi as a station and connect
         self.wlan = WLAN(mode=WLAN.STA)
         self._connect_to_wifi()
+
+        # feed the dog
+        self.wdt.feed()
 
         # get a time sync
         self._log('Syncing time with {} ...', self.ntp_server)
@@ -331,6 +337,8 @@ class NanoGateway:
                 self._log('Failed to push uplink packet to server: {}', ex)
 
     def _pull_data(self):
+        # feed the dog everytime we pull data
+        self.wdt.feed()
         token = uos.urandom(2)
         packet = bytes([PROTOCOL_VERSION]) + token + bytes([PULL_DATA]) + ubinascii.unhexlify(self.id)
         with self.udp_lock:
