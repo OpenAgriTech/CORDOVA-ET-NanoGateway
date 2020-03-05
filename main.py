@@ -3,6 +3,10 @@
 import config
 from nanogateway import NanoGateway
 
+__version__ = '0.1.9'
+
+print("CORDOVA-ET NanoGateway v{version}".format(version=__version__))
+
 if __name__ == '__main__':
     nanogw = NanoGateway(
         id=config.GATEWAY_ID,
@@ -13,8 +17,7 @@ if __name__ == '__main__':
         server=config.SERVER,
         port=config.PORT,
         ntp_server=config.NTP,
-        ntp_period=config.NTP_PERIOD_S,
-        region=config.LORA_REGION
+        ntp_period=config.NTP_PERIOD_S
         )
 
     nanogw.start()

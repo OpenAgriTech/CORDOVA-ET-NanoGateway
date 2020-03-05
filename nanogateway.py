@@ -93,14 +93,13 @@ class NanoGateway:
     connecting to the Internet.
     """
 
-    def __init__(self, id, frequency, datarate, ssid, password, server, port, ntp_server='pool.ntp.org', ntp_period=3600, region=LoRa.EU868):
+    def __init__(self, id, frequency, datarate, ssid, password, server, port, ntp_server='pool.ntp.org', ntp_period=3600):
         self.id = id
         self.server = server
         self.port = port
 
         self.frequency = frequency
         self.datarate = datarate
-        self.region=region
 
         self.ssid = ssid
         self.password = password
@@ -182,8 +181,7 @@ class NanoGateway:
             sf=self.sf,
             preamble=8,
             coding_rate=LoRa.CODING_4_5,
-            tx_iq=True,
-            region=self.region
+            tx_iq=True
         )
 
         # create a raw LoRa socket
@@ -452,7 +450,7 @@ class NanoGateway:
             except usocket.timeout:
                 pass
             except OSError as ex:
-                if ex.errno != errno.EAGAIN:
+                if ex.args[0] != errno.EAGAIN:
                     self._log('UDP recv OSError Exception: {}', ex)
             except Exception as ex:
                 self._log('UDP recv Exception: {}', ex)
